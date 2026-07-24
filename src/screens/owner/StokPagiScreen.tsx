@@ -103,7 +103,7 @@ export default function StokPagiScreen() {
                 </View>
                 <Text style={styles.tableCell}>{m.qtyOut}</Text>
                 <Text style={styles.tableCell}>{m.qtyReturned}</Text>
-                <Text style={styles.tableCell}>{m.qtySold}</Text>
+                <Text style={styles.tableCell}>{m.returnedAt ? m.qtySold : 0}</Text>
               </View>
             ))}
           </View>
