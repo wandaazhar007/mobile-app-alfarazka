@@ -9,5 +9,7 @@ export function formatTimeAgo(isoDate: string): string {
   if (minutes < 1) return 'Baru saja';
   if (minutes < 60) return `${minutes} menit lalu`;
   const hours = Math.round(minutes / 60);
-  return `${hours} jam lalu`;
+  if (hours < 24) return `${hours} jam lalu`;
+  const days = Math.round(hours / 24);
+  return `${days} hari lalu`;
 }

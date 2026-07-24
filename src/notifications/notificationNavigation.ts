@@ -1,26 +1,9 @@
 import * as Notifications from 'expo-notifications';
-import { navigateToOwnerTab } from '../navigation/navigationRef';
-import type { OwnerTabsParamList } from '../navigation/OwnerTabs';
-
-type Destination = { tab: keyof OwnerTabsParamList; params?: OwnerTabsParamList[keyof OwnerTabsParamList] };
-
-// Stok Pagi/Pengeluaran/Piutang sekarang punya layar sendiri (di dalam stack tab
-// Dashboard, lihat DashboardStack) — jadi notifikasi jenis itu diarahkan LANGSUNG
-// ke layarnya, bukan cuma ke tab Dashboard polos.
-const NOTIFICATION_TYPE_TO_DESTINATION: Record<string, Destination> = {
-  'morning-stock': { tab: 'Dashboard', params: { screen: 'StokPagi' } },
-  setoran: { tab: 'Laporan' },
-  'daily-closing': { tab: 'Laporan' },
-  'unsettled-sellers': { tab: 'Laporan' },
-  'seller-loan': { tab: 'UtangPenjual' },
-  'large-expense': { tab: 'Dashboard', params: { screen: 'Pengeluaran' } },
-  'receivable-overdue': { tab: 'Dashboard', params: { screen: 'Piutang' } },
-};
+import { navigateToNotificationType } from './notificationDestinations';
 
 function handleResponse(response: Notifications.NotificationResponse) {
   const type = response.notification.request.content.data?.type as string | undefined;
-  const destination = type ? NOTIFICATION_TYPE_TO_DESTINATION[type] : undefined;
-  if (destination) navigateToOwnerTab(destination.tab, destination.params);
+  navigateToNotificationType(type);
 }
 
 // Dipanggil sekali di App.tsx (module scope, sama seperti backgroundLocationTask) —
