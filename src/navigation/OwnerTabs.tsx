@@ -30,9 +30,9 @@ export default function OwnerTabs() {
     <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Dashboard' }} />
       <Tab.Screen name="Laporan" component={LaporanScreen} options={{ title: 'Laporan' }} />
-      <Tab.Screen name="GajiPenjual" component={GajiPenjualScreen} options={{ title: 'Gaji Penjual' }} />
-      <Tab.Screen name="UtangPenjual" component={UtangPenjualScreen} options={{ title: 'Utang Penjual' }} />
       <Tab.Screen name="LokasiPenjual" component={LokasiPenjualStack} options={{ title: 'Lokasi Penjual' }} />
+      <Tab.Screen name="UtangPenjual" component={UtangPenjualScreen} options={{ title: 'Utang Penjual' }} />
+      <Tab.Screen name="GajiPenjual" component={GajiPenjualScreen} options={{ title: 'Gaji Penjual' }} />
     </Tab.Navigator>
   );
 }
