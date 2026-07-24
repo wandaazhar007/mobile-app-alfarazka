@@ -1,0 +1,51 @@
+# EAS Build archiving REPLACES .gitignore rules entirely once this file exists (per
+# EAS docs) — so everything in .gitignore that should still be excluded from the
+# cloud build upload is repeated here, EXCEPT google-services.json/GoogleService-Info.plist:
+# those two are gitignored (kept out of git, same reasoning as .env) but the cloud
+# build still needs the actual file content to compile push notifications correctly
+# (see the FirebaseApp-not-initialized bug fixed earlier this session).
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+/ios
+/android
+
+# local-only Claude Code config
+/.claude/
+CLAUDE.md
