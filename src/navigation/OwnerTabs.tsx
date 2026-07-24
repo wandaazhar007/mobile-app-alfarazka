@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import OwnerDashboardScreen from '../screens/owner/OwnerDashboardScreen';
+import type { NavigatorScreenParams } from '@react-navigation/native';
+import DashboardStack, { type DashboardStackParamList } from './DashboardStack';
 import LaporanScreen from '../screens/owner/LaporanScreen';
 import GajiPenjualScreen from '../screens/owner/GajiPenjualScreen';
 import UtangPenjualScreen from '../screens/owner/UtangPenjualScreen';
@@ -7,7 +8,10 @@ import LokasiPenjualStack from './LokasiPenjualStack';
 import CustomTabBar from './CustomTabBar';
 
 export type OwnerTabsParamList = {
-  Dashboard: undefined;
+  // NavigatorScreenParams (bukan cuma undefined) — supaya notification tap handler
+  // (lihat notifications/notificationNavigation.ts) bisa navigasi langsung ke layar
+  // detail di dalam tab ini (mis. StokPagi), bukan cuma buka tab Dashboard polos.
+  Dashboard: NavigatorScreenParams<DashboardStackParamList> | undefined;
   Laporan: undefined;
   GajiPenjual: undefined;
   UtangPenjual: undefined;
@@ -24,7 +28,7 @@ const Tab = createBottomTabNavigator<OwnerTabsParamList>();
 export default function OwnerTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Dashboard" component={OwnerDashboardScreen} options={{ title: 'Dashboard' }} />
+      <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Dashboard' }} />
       <Tab.Screen name="Laporan" component={LaporanScreen} options={{ title: 'Laporan' }} />
       <Tab.Screen name="GajiPenjual" component={GajiPenjualScreen} options={{ title: 'Gaji Penjual' }} />
       <Tab.Screen name="UtangPenjual" component={UtangPenjualScreen} options={{ title: 'Utang Penjual' }} />

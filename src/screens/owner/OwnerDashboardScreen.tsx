@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, RefreshControl } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { formatRupiah, formatTanggal } from '../../utils/format';
 import todayJakarta from '../../utils/todayJakarta';
@@ -7,9 +10,16 @@ import StatCard from '../../components/StatCard';
 import Badge from '../../components/Badge';
 import AppNavbar from '../../components/AppNavbar';
 import { SkeletonBlock, SkeletonStatCardRow, SkeletonBadge } from '../../components/Skeleton';
+import type { DashboardStackParamList } from '../../navigation/DashboardStack';
 import type { DailyReport, SellerReportRow } from '../../types/dailyReport';
 import type { RangeTotals } from '../../types/dailyClosing';
 import type { Expense } from '../../types/expense';
+
+const QUICK_LINKS = [
+  { key: 'StokPagi' as const, label: 'Stok Pagi', icon: 'cube-outline' as const },
+  { key: 'Pengeluaran' as const, label: 'Pengeluaran', icon: 'receipt-outline' as const },
+  { key: 'Piutang' as const, label: 'Piutang', icon: 'document-text-outline' as const },
+];
 
 function daysAgoJakarta(days: number): string {
   const [y, m, d] = todayJakarta().split('-').map(Number);
@@ -31,6 +41,7 @@ function presetToRange(preset: RangePreset): { from: string; to: string } {
 }
 
 export default function OwnerDashboardScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<DashboardStackParamList, 'DashboardHome'>>();
   const [preset, setPreset] = useState<RangePreset>('today');
   const [report, setReport] = useState<DailyReport | null>(null);
   const [closing, setClosing] = useState<RangeTotals | null>(null);
@@ -94,6 +105,15 @@ export default function OwnerDashboardScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Dashboard</Text>
           <Text style={styles.subtitle}>Ringkasan penjualan, pengeluaran, dan laba gabungan.</Text>
+        </View>
+
+        <View style={styles.quickLinksRow}>
+          {QUICK_LINKS.map((link) => (
+            <Pressable key={link.key} style={styles.quickLinkCard} onPress={() => navigation.navigate(link.key)}>
+              <Ionicons name={link.icon} size={20} color="#e63946" />
+              <Text style={styles.quickLinkLabel}>{link.label}</Text>
+            </Pressable>
+          ))}
         </View>
 
         <View style={styles.presetRow}>
@@ -207,6 +227,18 @@ const styles = StyleSheet.create({
   header: { marginBottom: 16 },
   title: { fontSize: 20, fontWeight: '700', color: '#111827' },
   subtitle: { fontSize: 13, color: '#6b7280', marginTop: 2 },
+  quickLinksRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
+  quickLinkCard: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    paddingVertical: 12,
+  },
+  quickLinkLabel: { fontSize: 11, fontWeight: '600', color: '#374151' },
   presetRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   presetButton: {
     paddingVertical: 6,

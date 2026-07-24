@@ -2,23 +2,25 @@ import * as Notifications from 'expo-notifications';
 import { navigateToOwnerTab } from '../navigation/navigationRef';
 import type { OwnerTabsParamList } from '../navigation/OwnerTabs';
 
-// Owner belum punya screen khusus buat semua jenis notifikasi (mis. stok pagi &
-// pengeluaran besar) — yang belum ada layarnya diarahkan ke Dashboard sebagai
-// fallback yang paling relevan, bukan dibiarkan tanpa navigasi sama sekali.
-const NOTIFICATION_TYPE_TO_TAB: Record<string, keyof OwnerTabsParamList> = {
-  'morning-stock': 'Dashboard',
-  setoran: 'Laporan',
-  'daily-closing': 'Laporan',
-  'unsettled-sellers': 'Laporan',
-  'seller-loan': 'UtangPenjual',
-  'large-expense': 'Dashboard',
-  'receivable-overdue': 'Dashboard',
+type Destination = { tab: keyof OwnerTabsParamList; params?: OwnerTabsParamList[keyof OwnerTabsParamList] };
+
+// Stok Pagi/Pengeluaran/Piutang sekarang punya layar sendiri (di dalam stack tab
+// Dashboard, lihat DashboardStack) — jadi notifikasi jenis itu diarahkan LANGSUNG
+// ke layarnya, bukan cuma ke tab Dashboard polos.
+const NOTIFICATION_TYPE_TO_DESTINATION: Record<string, Destination> = {
+  'morning-stock': { tab: 'Dashboard', params: { screen: 'StokPagi' } },
+  setoran: { tab: 'Laporan' },
+  'daily-closing': { tab: 'Laporan' },
+  'unsettled-sellers': { tab: 'Laporan' },
+  'seller-loan': { tab: 'UtangPenjual' },
+  'large-expense': { tab: 'Dashboard', params: { screen: 'Pengeluaran' } },
+  'receivable-overdue': { tab: 'Dashboard', params: { screen: 'Piutang' } },
 };
 
 function handleResponse(response: Notifications.NotificationResponse) {
   const type = response.notification.request.content.data?.type as string | undefined;
-  const tab = type ? NOTIFICATION_TYPE_TO_TAB[type] : undefined;
-  if (tab) navigateToOwnerTab(tab);
+  const destination = type ? NOTIFICATION_TYPE_TO_DESTINATION[type] : undefined;
+  if (destination) navigateToOwnerTab(destination.tab, destination.params);
 }
 
 // Dipanggil sekali di App.tsx (module scope, sama seperti backgroundLocationTask) —

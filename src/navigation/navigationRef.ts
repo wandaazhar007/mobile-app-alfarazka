@@ -6,8 +6,13 @@ import type { OwnerTabsParamList } from './OwnerTabs';
 // bisa navigasi tanpa perlu context/prop-drilling sampai ke situ.
 export const navigationRef = createNavigationContainerRef<OwnerTabsParamList>();
 
-export function navigateToOwnerTab(name: keyof OwnerTabsParamList) {
+export function navigateToOwnerTab<Name extends keyof OwnerTabsParamList>(
+  name: Name,
+  params?: OwnerTabsParamList[Name]
+) {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name);
+    // React Navigation's overloaded `navigate` type doesn't infer well through a
+    // generic wrapper like this — the (name, params) shape itself is correct.
+    (navigationRef.navigate as (name: Name, params?: OwnerTabsParamList[Name]) => void)(name, params);
   }
 }
