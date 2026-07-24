@@ -81,7 +81,7 @@ export default function OwnerDashboardScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preset]);
 
-  const kelilingColumns = ['Penjual', 'Cash', 'QRIS', 'Total', 'Terjual', 'Retur'];
+  const kelilingColumns = ['Penjual', 'Cash', 'QRIS', 'Total', 'Minus', 'Terjual', 'Retur'];
 
   const renderSellerRow = (r: SellerReportRow) => (
     <View key={r.sellerId} style={styles.tableRow}>
@@ -89,6 +89,7 @@ export default function OwnerDashboardScreen() {
       <Text style={styles.tableCell}>{formatRupiah(r.cash)}</Text>
       <Text style={styles.tableCell}>{formatRupiah(r.qris)}</Text>
       <Text style={styles.tableCell}>{formatRupiah(r.totalPenjualan)}</Text>
+      <Text style={[styles.tableCell, styles.minusValue]}>-{formatRupiah(r.minus)}</Text>
       <Text style={styles.tableCell}>{r.qtySold}</Text>
       <Text style={styles.tableCell}>{r.qtyReturned}</Text>
     </View>
@@ -266,6 +267,7 @@ const styles = StyleSheet.create({
   tableCell: { width: 90, fontSize: 12, color: '#111827', textAlign: 'right' },
   tableCellName: { width: 100, textAlign: 'left' },
   tableHeaderText: { fontWeight: '700', color: '#6b7280' },
+  minusValue: { color: '#dc2626' },
   expenseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
