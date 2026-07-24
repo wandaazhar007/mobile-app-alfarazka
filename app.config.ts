@@ -91,6 +91,12 @@ const config: ExpoConfig = {
         isAndroidForegroundServiceEnabled: true,
       },
     ],
+    [
+      'expo-notifications',
+      {
+        color: '#e63946',
+      },
+    ],
   ],
   // Link ke project EAS (dibuat via `eas init`) — WAJIB supaya `eas build` tahu
   // project mana yang dibangun/di-manage kredensialnya di server Expo.

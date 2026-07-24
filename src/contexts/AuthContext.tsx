@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback, type React
 import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import api from '../services/api';
+import { registerPushToken } from '../notifications/registerPushToken';
 import type { AppUser } from '../types/auth';
 
 // Mirror frontend/src/contexts/AuthContext.tsx — logic identik, cuma beda platform
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data } = await api.post('/api/auth/sync');
       setAppUser(data);
+      registerPushToken();
     } catch (err) {
       setAppUser(null);
       setError(err instanceof Error ? err.message : 'Gagal sinkronisasi user');

@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Notifications from 'expo-notifications';
 import { AuthProvider } from './src/contexts/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
 // Side-effect import (TaskManager.defineTask jalan di module scope file itu) — WAJIB
@@ -12,6 +13,18 @@ import './src/location/backgroundLocationTask';
 // render sama sekali, supaya splash native tidak auto-hide duluan sebelum
 // AnimatedSplashScreen (dipanggil dari RootNavigator) sempat ambil alih.
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// Default expo-notifications: notifikasi yang datang SAAT app terbuka (foreground)
+// tidak ditampilkan sama sekali kecuali handler ini didaftarkan — Owner harus tetap
+// lihat notifikasi walau appnya sedang aktif dipakai.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
   return (
