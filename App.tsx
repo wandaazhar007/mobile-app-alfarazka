@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import { AuthProvider } from './src/contexts/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import { setupNotificationNavigation } from './src/notifications/notificationNavigation';
 // Side-effect import (TaskManager.defineTask jalan di module scope file itu) — WAJIB
 // di-import di sini supaya OS bisa relaunch app secara headless (app sudah di-kill
 // total) dan tetap tahu apa yang harus dilakukan begitu ada update lokasi baru.
@@ -25,6 +26,8 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
+setupNotificationNavigation();
 
 export default function App() {
   return (

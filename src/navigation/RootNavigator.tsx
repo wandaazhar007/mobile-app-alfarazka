@@ -5,6 +5,8 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import AnimatedSplashScreen from '../screens/AnimatedSplashScreen';
 import SellerStack from './SellerStack';
 import OwnerTabs from './OwnerTabs';
+import { navigationRef } from './navigationRef';
+import { checkInitialNotificationNavigation } from '../notifications/notificationNavigation';
 
 // Pola sama seperti ProtectedRoute/App.tsx di frontend web: selama AuthContext masih
 // resolving (belum tahu firebaseUser/appUser), tampilkan loading — jangan flash ke
@@ -26,5 +28,9 @@ export default function RootNavigator() {
     return <LoginScreen />;
   }
 
-  return <NavigationContainer>{appUser.role === 'seller' ? <SellerStack /> : <OwnerTabs />}</NavigationContainer>;
+  return (
+    <NavigationContainer ref={navigationRef} onReady={() => checkInitialNotificationNavigation()}>
+      {appUser.role === 'seller' ? <SellerStack /> : <OwnerTabs />}
+    </NavigationContainer>
+  );
 }
