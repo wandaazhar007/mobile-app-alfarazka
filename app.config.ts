@@ -26,6 +26,11 @@ const config: ExpoConfig = {
   },
   android: {
     package: 'com.alfarazkabakery.mobile',
+    // Wajib untuk push notification (expo-notifications) — tanpa ini app tidak bisa
+    // daftar ke Firebase Cloud Messaging, getExpoPushTokenAsync() gagal diam-diam.
+    // File TIDAK di-commit ke git (lihat .gitignore) — sama seperti EXPO_PUBLIC_FIREBASE_*
+    // di .env, dan untuk build EAS cloud harus di-upload terpisah lewat eas.json/secret.
+    googleServicesFile: './google-services.json',
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
       foregroundImage: './assets/android-icon-foreground.png',
