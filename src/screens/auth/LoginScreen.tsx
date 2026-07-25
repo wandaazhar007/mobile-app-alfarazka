@@ -30,6 +30,28 @@ interface FormErrors {
   password?: string;
 }
 
+// Sebelumnya SEMUA error (termasuk jaringan bermasalah, mis. WiFi kantor yang
+// memblokir domain Google) ditampilkan sebagai "Email atau password salah" —
+// membingungkan karena kredensial sebenarnya benar. Sekarang dibedakan berdasarkan
+// `error.code` dari Firebase Auth.
+function getLoginErrorMessage(err: unknown): string {
+  const code = err && typeof err === 'object' && 'code' in err ? String((err as { code: unknown }).code) : '';
+
+  if (code === 'auth/network-request-failed') {
+    return 'Tidak bisa terhubung ke server. Periksa koneksi internet Anda (WiFi/data seluler) lalu coba lagi.';
+  }
+  if (code === 'auth/too-many-requests') {
+    return 'Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat lalu coba lagi.';
+  }
+  if (code === 'auth/user-disabled') {
+    return 'Akun ini dinonaktifkan. Hubungi admin/owner Anda.';
+  }
+  if (['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found', 'auth/invalid-email'].includes(code)) {
+    return 'Email atau password salah. Silakan coba lagi.';
+  }
+  return 'Gagal login. Silakan coba lagi.';
+}
+
 // Versi RN dari frontend/src/pages/Login.tsx — alur email+password + validasi per-field
 // (border merah + pesan merah di bawah field, sama seperti FormField.tsx di web), tanpa
 // "lupa password" dulu (bisa ditambah nanti, tidak masuk scope Fase B).
@@ -68,8 +90,8 @@ export default function LoginScreen() {
       await AsyncStorage.setItem(REMEMBERED_EMAIL_KEY, email.trim());
       // Berhasil login -> onAuthStateChanged di AuthContext yang urus sisanya (sync ke
       // backend, isi appUser), navigasi otomatis pindah lewat RootNavigator.
-    } catch {
-      setError('Email atau password salah. Silakan coba lagi.');
+    } catch (err) {
+      setError(getLoginErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
