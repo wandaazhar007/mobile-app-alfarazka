@@ -63,6 +63,18 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const passwordRef = useRef<TextInput>(null);
+  const isFirstRender = useRef(true);
+
+  // Toggle show/hide me-mount ulang TextInput password (lihat komentar di key prop-nya),
+  // yang otomatis melepas fokus/keyboard — refocus di sini supaya user bisa lanjut
+  // ngetik tanpa perlu tap field lagi. Di-skip saat render pertama (belum pernah toggle).
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    passwordRef.current?.focus();
+  }, [showPassword]);
 
   useEffect(() => {
     AsyncStorage.getItem(REMEMBERED_EMAIL_KEY).then((saved) => {
@@ -134,6 +146,12 @@ export default function LoginScreen() {
           <View style={styles.fieldGroup}>
             <View style={[styles.passwordWrap, errors.password && styles.inputError]}>
               <TextInput
+                // key berubah saat toggle show/hide — di Android, meng-toggle
+                // secureTextEntry pada TextInput yang sudah terisi teks kadang
+                // membuat teksnya tidak ter-render sama sekali (bukan dots, bukan
+                // teks biasa) sampai user mengetik ulang. Ganti key memaksa
+                // TextInput di-mount ulang dari awal dengan mode yang benar.
+                key={showPassword ? 'visible' : 'hidden'}
                 ref={passwordRef}
                 style={styles.passwordInput}
                 placeholder="Password"
